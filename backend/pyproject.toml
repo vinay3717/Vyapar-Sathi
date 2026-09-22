@@ -1,0 +1,27 @@
+[project]
+name = "vyapar-sarthi-backend"
+version = "0.1.0"
+description = "Vyapar Sarthi - Autonomous AI Teammate for Paytm Merchants"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn>=0.30.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.2.0",
+    "langgraph>=0.2.0",
+    "cognee>=0.1.20",
+    "google-genai>=0.1.0",
+    "httpx>=0.27.0",
+    "python-multipart>=0.0.9",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[tool.uv]
+package = false
+
