@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Play, Pause, CheckCircle2, Volume2, AlertCircle } from "lucide-react";
+import { Play, Pause, CheckCircle2, AlertCircle } from "lucide-react";
 
 interface VoicePlayerProps {
   audioUrl?: string | null;

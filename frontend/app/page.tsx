@@ -1,101 +1,199 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useEffect, useState, useCallback } from "react";
+import { MerchantHeader } from "./components/MerchantHeader";
+import { SuggestionCard } from "./components/SuggestionCard";
+import { Suggestion } from "./types";
+import { RefreshCw, Sparkles, AlertCircle, Radio, Clock, ShieldCheck } from "lucide-react";
+
+export default function MerchantDashboard() {
+  const merchantId = "merchant_001";
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [activePlayingId, setActivePlayingId] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<string>("");
+
+  const fetchSuggestions = useCallback(async (isManualRefresh = false) => {
+    if (isManualRefresh) setRefreshing(true);
+    else setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch(`/api/suggestions?merchant_id=${merchantId}`);
+      if (!res.ok) {
+        throw new Error(`Failed to fetch: ${res.statusText}`);
+      }
+      const data = await res.json();
+      if (data.suggestions && Array.isArray(data.suggestions)) {
+        setSuggestions(data.suggestions);
+        setLastUpdated(new Date().toLocaleTimeString("hi-IN", { hour: "2-digit", minute: "2-digit" }));
+      }
+    } catch (err: unknown) {
+      console.error("Error loading suggestions:", err);
+      setError("सुझाव लोड करने में समस्या आई। कृपया पुनः प्रयास करें।");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [merchantId]);
+
+  useEffect(() => {
+    fetchSuggestions();
+  }, [fetchSuggestions]);
+
+  const handlePlayVoice = async (suggestionId: string) => {
+    // If the suggestion already has an audio_url, activate it
+    const current = suggestions.find((s) => s.suggestion_id === suggestionId);
+
+    if (current && current.audio_url) {
+      setActivePlayingId(suggestionId);
+      return;
+    }
+
+    try {
+      // Call voice endpoint to get audio_url
+      const res = await fetch("/api/voice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ suggestion_id: suggestionId, merchant_id: merchantId }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.audio_url) {
+          setSuggestions((prev) =>
+            prev.map((s) =>
+              s.suggestion_id === suggestionId ? { ...s, audio_url: data.audio_url } : s
+            )
+          );
+          setActivePlayingId(suggestionId);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching audio:", err);
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <main className="min-h-screen bg-slate-950 text-slate-100 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Top Header */}
+        <MerchantHeader
+          name="राजू किराना"
+          category="किराना स्टोर"
+          language="hi"
+          location="दादर, मुंबई"
         />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        {/* Section title & controls */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-400" />
+              <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white">
+                आज के मुख्य व्यापार सुझाव
+              </h2>
+            </div>
+            <p className="text-slate-400 text-xs sm:text-sm mt-1">
+              आपके स्टोर के ऐतिहासिक डेटा और आसपास के सफल किराना रुझानों से तैयार किए गए
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {lastUpdated && (
+              <span className="text-xs text-slate-400 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5" />
+                अंतिम अपडेट: {lastUpdated}
+              </span>
+            )}
+            <button
+              onClick={() => fetchSuggestions(true)}
+              disabled={refreshing || loading}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? "animate-spin text-amber-400" : ""}`} />
+              <span>ताज़ा करें (Refresh)</span>
+            </button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {/* Loading state */}
+        {loading && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-12">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-80 rounded-2xl bg-slate-900/60 border border-slate-800 animate-pulse p-6 flex flex-col justify-between"
+              >
+                <div className="space-y-4">
+                  <div className="h-6 w-32 bg-slate-800 rounded-full"></div>
+                  <div className="h-6 w-3/4 bg-slate-800 rounded"></div>
+                  <div className="h-16 w-full bg-slate-800/60 rounded-xl"></div>
+                </div>
+                <div className="h-10 w-28 bg-slate-800 rounded-xl"></div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Error message */}
+        {error && !loading && (
+          <div className="p-4 rounded-xl bg-red-950/40 border border-red-800 text-red-300 flex items-center gap-3 my-6">
+            <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
+            <span className="text-sm">{error}</span>
+          </div>
+        )}
+
+        {/* Suggestions Grid (3 Cards: Failure Guard, Personal Best, Network Wisdom) */}
+        {!loading && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {suggestions.map((suggestion) => (
+              <SuggestionCard
+                key={suggestion.suggestion_id}
+                suggestion={suggestion}
+                isPlaying={activePlayingId === suggestion.suggestion_id}
+                onPlay={handlePlayVoice}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Live Audio Status Bar */}
+        {activePlayingId && (
+          <div className="mt-8 p-4 rounded-xl bg-slate-900/90 border border-indigo-500/40 flex items-center justify-between gap-4 shadow-lg backdrop-blur-sm animate-fade-in">
+            <div className="flex items-center gap-3">
+              <Radio className="w-5 h-5 text-amber-400 animate-pulse" />
+              <div>
+                <div className="text-xs font-bold text-white">
+                  आवाज़ में सुझाव चल रहा है (Sarvam AI Bulbul v3)
+                </div>
+                <div className="text-[11px] text-slate-400">
+                  {suggestions.find((s) => s.suggestion_id === activePlayingId)?.title}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setActivePlayingId(null)}
+              className="px-3 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
+            >
+              बंद करें ✕
+            </button>
+          </div>
+        )}
+
+        {/* Footer info banner */}
+        <footer className="mt-14 pt-6 border-t border-slate-900 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-indigo-400" />
+            <span>व्यापार साथी • Paytm Build for India AI Hackathon (Team Kairos)</span>
+          </div>
+          <div className="text-slate-600">
+            Powered by LangGraph • Cognee • Sarvam AI TTS • Gemini Flash
+          </div>
+        </footer>
+      </div>
+    </main>
   );
 }

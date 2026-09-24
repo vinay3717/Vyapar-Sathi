@@ -3,7 +3,7 @@
 import React from "react";
 import { Suggestion, SuggestionType } from "../types";
 import { VoicePlayer } from "./VoicePlayer";
-import { Volume2, AlertTriangle, TrendingUp, Users, ArrowRight, Sparkles } from "lucide-react";
+import { Volume2, AlertTriangle, TrendingUp, Users, ArrowRight } from "lucide-react";
 
 interface SuggestionCardProps {
   suggestion: Suggestion;

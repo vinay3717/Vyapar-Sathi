@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Store, Globe, Sparkles, ShieldCheck } from "lucide-react";
+import { Store, Globe, ShieldCheck } from "lucide-react";
 
 interface MerchantHeaderProps {
   name?: string;
