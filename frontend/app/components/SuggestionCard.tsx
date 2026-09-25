@@ -153,19 +153,19 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
 
   return (
     <div
-      className={`rounded-2xl border p-6 flex flex-col justify-between transition-all duration-300 relative group overflow-hidden ${config.containerClass}`}
+      className={`rounded-2xl border p-4 sm:p-5 flex flex-col justify-between transition-all duration-300 relative group overflow-hidden ${config.containerClass}`}
     >
       <div>
         {/* Top bar: Type badge & Confidence */}
-        <div className="flex items-start justify-between gap-3 mb-4">
-          <div className="flex flex-col gap-1">
+        <div className="flex items-start justify-between gap-3 mb-2.5">
+          <div className="flex flex-col gap-0.5">
             <span
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border tracking-wide w-fit ${config.badgeClass}`}
+              className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold border tracking-wide w-fit ${config.badgeClass}`}
             >
               {config.icon}
               {config.label}
             </span>
-            <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium ml-1">
+            <span className="text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 font-medium ml-1">
               {config.subLabel}
             </span>
           </div>
@@ -186,25 +186,25 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
         </div>
 
         {/* Title */}
-        <h2 className="text-lg font-bold text-slate-900 dark:text-white leading-snug mb-2">
+        <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug mb-1.5">
           {suggestion.title}
         </h2>
 
         {/* Body Explanation */}
-        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-5">
+        <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
           {suggestion.body}
         </p>
 
         {/* Action Highlight Box (Imperative) */}
         <div
-          className={`p-3.5 rounded-xl border flex items-start gap-2.5 mb-5 ${config.actionBgClass}`}
+          className={`p-2.5 sm:p-3 rounded-xl border flex items-start gap-2 mb-3 ${config.actionBgClass}`}
         >
           <ArrowRight className="w-4 h-4 mt-0.5 shrink-0 opacity-80" />
           <div>
             <div className="text-[10px] uppercase font-bold tracking-wider opacity-70">
               {i18n.actionLabel}
             </div>
-            <div className="text-sm font-bold leading-snug mt-0.5">
+            <div className="text-xs sm:text-sm font-bold leading-snug mt-0.5">
               {suggestion.action}
             </div>
           </div>
@@ -212,7 +212,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
       </div>
 
       {/* Footer: Voice Button or Embedded Player */}
-      <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3">
+      <div className="pt-2.5 border-t border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3">
         {isPlaying && suggestion.audio_url ? (
           <VoicePlayer audioUrl={suggestion.audio_url} autoPlay={true} />
         ) : (

@@ -67,7 +67,7 @@ export const MerchantHeader: React.FC<MerchantHeaderProps> = ({
   ];
 
   return (
-    <header className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 shadow-xl border border-indigo-800/40 mb-8 backdrop-blur-md">
+    <header className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-4 sm:p-5 shadow-xl border border-indigo-800/40 mb-3 sm:mb-4 backdrop-blur-md">
       {/* Decorative ambient background glows */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-60 h-60 bg-blue-500/10 rounded-full blur-2xl -ml-20 -mb-20 pointer-events-none" />
