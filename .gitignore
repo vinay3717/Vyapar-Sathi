@@ -1,4 +1,15 @@
-# Python & Environments
+# Node & Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+node_modules/
+.next/
+out/
+build/
+
+# Python & Virtual Environments
+backend/.venv/
 .venv/
 env/
 venv/
@@ -9,14 +20,8 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 dist/
-build/
 
-# Environment Variables & Secrets
-.env
-*.env
-!.env.example
-
-# Cognee & Local Databases
+# Cognee & Local Storage
 .cognee/
 backend/.cognee/
 *.db
@@ -24,14 +29,26 @@ backend/.cognee/
 *.duckdb
 lancedb/
 
-# Node & Frontend
-node_modules/
-.next/
-out/
+# Environment Variables & Secrets
+.env
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+frontend/.env.local
+!.env.example
+
+# Audio Cache & Temp Files
+*.log
+/tmp/
+*.wav
+*.mp3
 
 # IDE & OS
 .vscode/
 .idea/
+.DS_Store
 Thumbs.db
 Desktop.ini
-*.log

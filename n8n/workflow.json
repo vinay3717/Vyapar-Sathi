@@ -1,0 +1,106 @@
+{
+  "name": "Vyapar Sarthi - Weekly Merchant Trigger",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e674b889-408f-4aa7-b5bf-73c26d7f9501",
+      "name": "Manual Demo Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 9,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "78a9c14d-944a-4e2b-bbd7-b8ea4cb4285b",
+      "name": "Every Monday 9am IST",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.FASTAPI_BACKEND_URL || $env.N8N_WEBHOOK_URL || 'http://localhost:8000' }}/api/webhook/n8n/trigger",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"merchant_id\": \"merchant_001\",\n  \"trigger\": \"weekly_check\"\n}",
+        "options": {}
+      },
+      "id": "31b26c71-dc58-450f-934c-62d98b982142",
+      "name": "Trigger Vyapar Sarthi Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        380
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Demo Trigger": {
+      "main": [
+        [
+          {
+            "node": "Trigger Vyapar Sarthi Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every Monday 9am IST": {
+      "main": [
+        [
+          {
+            "node": "Trigger Vyapar Sarthi Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c8e88863-1f1f-4d9d-9279-d51e70e28f0b",
+  "id": "vyapar-sarthi-weekly-trigger",
+  "tags": [
+    {
+      "name": "Paytm-Hackathon"
+    },
+    {
+      "name": "Autonomous-Teammate"
+    }
+  ]
+}
