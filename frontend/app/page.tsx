@@ -8,6 +8,7 @@ import { RefreshCw, Sparkles, AlertCircle, Radio, Clock, ShieldCheck } from "luc
 
 export default function MerchantDashboard() {
   const merchantId = "merchant_001";
+  const [language, setLanguage] = useState<"hi" | "mr" | "en">("hi");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -15,36 +16,75 @@ export default function MerchantDashboard() {
   const [activePlayingId, setActivePlayingId] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string>("");
 
-  const fetchSuggestions = useCallback(async (isManualRefresh = false) => {
-    if (isManualRefresh) setRefreshing(true);
-    else setLoading(true);
-    setError(null);
+  const pageText = {
+    hi: {
+      heading: "आज के मुख्य व्यापार सुझाव",
+      subheading: "आपके स्टोर के ऐतिहासिक डेटा और आसपास के सफल किराना रुझानों से तैयार किए गए",
+      lastUpdatedPrefix: "अंतिम अपडेट:",
+      refreshBtn: "ताज़ा करें (Refresh)",
+      playingAudioTitle: "आवाज़ में सुझाव चल रहा है (Sarvam AI Bulbul v3)",
+      closeBtn: "बंद करें ✕",
+      errorMsg: "सुझाव लोड करने में समस्या आई। कृपया पुनः प्रयास करें।",
+    },
+    mr: {
+      heading: "आजच्या प्रमुख व्यावसायिक शिफारसी",
+      subheading: "तुमच्या दुकानाचा मागील डेटा आणि परिसरातील यशस्वी किराणा ट्रेंड्सवरून तयार केलेल्या",
+      lastUpdatedPrefix: "शेवटचे अपडेट:",
+      refreshBtn: "ताजे करा (Refresh)",
+      playingAudioTitle: "आवाजात शिफारस सुरू आहे (Sarvam AI Bulbul v3)",
+      closeBtn: "बंद करा ✕",
+      errorMsg: "शिफारसी लोड करण्यात अडचण आली. कृपया पुन्हा प्रयत्न करा.",
+    },
+    en: {
+      heading: "Today's Key Business Recommendations",
+      subheading: "Synthesized from your store's historical patterns and local market trends",
+      lastUpdatedPrefix: "Last updated:",
+      refreshBtn: "Refresh",
+      playingAudioTitle: "Playing Voice Recommendation (Sarvam AI Bulbul v3)",
+      closeBtn: "Close ✕",
+      errorMsg: "Failed to load recommendations. Please try again.",
+    },
+  }[language];
 
-    try {
-      const res = await fetch(`/api/suggestions?merchant_id=${merchantId}`);
-      if (!res.ok) {
-        throw new Error(`Failed to fetch: ${res.statusText}`);
+  const fetchSuggestions = useCallback(
+    async (targetLang = language, isManualRefresh = false) => {
+      if (isManualRefresh) setRefreshing(true);
+      else setLoading(true);
+      setError(null);
+
+      try {
+        const res = await fetch(`/api/suggestions?merchant_id=${merchantId}&language=${targetLang}`);
+        if (!res.ok) {
+          throw new Error(`Failed to fetch: ${res.statusText}`);
+        }
+        const data = await res.json();
+        if (data.suggestions && Array.isArray(data.suggestions)) {
+          setSuggestions(data.suggestions);
+          const localeCode = targetLang === "mr" ? "mr-IN" : targetLang === "en" ? "en-IN" : "hi-IN";
+          setLastUpdated(new Date().toLocaleTimeString(localeCode, { hour: "2-digit", minute: "2-digit" }));
+        }
+      } catch (err: unknown) {
+        console.error("Error loading suggestions:", err);
+        setError(pageText.errorMsg);
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
       }
-      const data = await res.json();
-      if (data.suggestions && Array.isArray(data.suggestions)) {
-        setSuggestions(data.suggestions);
-        setLastUpdated(new Date().toLocaleTimeString("hi-IN", { hour: "2-digit", minute: "2-digit" }));
-      }
-    } catch (err: unknown) {
-      console.error("Error loading suggestions:", err);
-      setError("सुझाव लोड करने में समस्या आई। कृपया पुनः प्रयास करें।");
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [merchantId]);
+    },
+    [merchantId, language, pageText.errorMsg]
+  );
 
   useEffect(() => {
-    fetchSuggestions();
-  }, [fetchSuggestions]);
+    fetchSuggestions(language, false);
+  }, [language, fetchSuggestions]);
+
+  const handleLanguageChange = (newLang: "hi" | "mr" | "en") => {
+    if (newLang === language) return;
+    setLanguage(newLang);
+    setActivePlayingId(null);
+  };
 
   const handlePlayVoice = async (suggestionId: string) => {
-    // If the suggestion already has an audio_url, activate it
     const current = suggestions.find((s) => s.suggestion_id === suggestionId);
 
     if (current && current.audio_url) {
@@ -53,11 +93,14 @@ export default function MerchantDashboard() {
     }
 
     try {
-      // Call voice endpoint to get audio_url
       const res = await fetch("/api/voice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ suggestion_id: suggestionId, merchant_id: merchantId }),
+        body: JSON.stringify({
+          suggestion_id: suggestionId,
+          merchant_id: merchantId,
+          language: language,
+        }),
       });
 
       if (res.ok) {
@@ -79,12 +122,13 @@ export default function MerchantDashboard() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        {/* Top Header */}
+        {/* Top Header with interactive Language Switcher */}
         <MerchantHeader
           name="राजू किराना"
           category="किराना स्टोर"
-          language="hi"
+          language={language}
           location="दादर, मुंबई"
+          onLanguageChange={handleLanguageChange}
         />
 
         {/* Section title & controls */}
@@ -93,11 +137,11 @@ export default function MerchantDashboard() {
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-400" />
               <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white">
-                आज के मुख्य व्यापार सुझाव
+                {pageText.heading}
               </h2>
             </div>
             <p className="text-slate-400 text-xs sm:text-sm mt-1">
-              आपके स्टोर के ऐतिहासिक डेटा और आसपास के सफल किराना रुझानों से तैयार किए गए
+              {pageText.subheading}
             </p>
           </div>
 
@@ -105,16 +149,16 @@ export default function MerchantDashboard() {
             {lastUpdated && (
               <span className="text-xs text-slate-400 flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />
-                अंतिम अपडेट: {lastUpdated}
+                {pageText.lastUpdatedPrefix} {lastUpdated}
               </span>
             )}
             <button
-              onClick={() => fetchSuggestions(true)}
+              onClick={() => fetchSuggestions(language, true)}
               disabled={refreshing || loading}
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? "animate-spin text-amber-400" : ""}`} />
-              <span>ताज़ा करें (Refresh)</span>
+              <span>{pageText.refreshBtn}</span>
             </button>
           </div>
         </div>
@@ -153,6 +197,7 @@ export default function MerchantDashboard() {
               <SuggestionCard
                 key={suggestion.suggestion_id}
                 suggestion={suggestion}
+                language={language}
                 isPlaying={activePlayingId === suggestion.suggestion_id}
                 onPlay={handlePlayVoice}
               />
@@ -167,7 +212,7 @@ export default function MerchantDashboard() {
               <Radio className="w-5 h-5 text-amber-400 animate-pulse" />
               <div>
                 <div className="text-xs font-bold text-white">
-                  आवाज़ में सुझाव चल रहा है (Sarvam AI Bulbul v3)
+                  {pageText.playingAudioTitle}
                 </div>
                 <div className="text-[11px] text-slate-400">
                   {suggestions.find((s) => s.suggestion_id === activePlayingId)?.title}
@@ -178,7 +223,7 @@ export default function MerchantDashboard() {
               onClick={() => setActivePlayingId(null)}
               className="px-3 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
             >
-              बंद करें ✕
+              {pageText.closeBtn}
             </button>
           </div>
         )}

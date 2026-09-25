@@ -4,6 +4,7 @@ from backend.models import DecisionEvent, Suggestion
 
 class AgentState(TypedDict, total=False):
     merchant_id: str
+    language: Optional[str]
     csv_path: Optional[str]
     csv_data: Optional[str]
     events: Optional[List[DecisionEvent]]

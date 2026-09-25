@@ -179,24 +179,28 @@ async def ingest_merchant(req: Optional[IngestRequest] = None):
 
 
 @app.get("/api/merchant/{merchant_id}/suggestions", response_model=SuggestionsResponse)
-async def get_merchant_suggestions(merchant_id: str):
+async def get_merchant_suggestions(merchant_id: str, language: str = "hi"):
     """
-    GET /api/merchant/{merchant_id}/suggestions
+    GET /api/merchant/{merchant_id}/suggestions?language=hi|mr|en
     Invokes the full LangGraph pipeline (ingest -> pattern -> suggestion -> voice)
-    and returns exactly 3 suggestions (failure_guard, personal_best, network_wisdom).
+    in the requested language and returns exactly 3 suggestions.
     """
     if not hasattr(app.state, "graph") or app.state.graph is None:
         app.state.graph = build_graph()
 
+    cache_key = f"{merchant_id}_{language}"
+
     try:
-        result = await app.state.graph.ainvoke({"merchant_id": merchant_id})
+        result = await app.state.graph.ainvoke({"merchant_id": merchant_id, "language": language})
         suggestions = result.get("suggestions", [])
     except Exception as e:
-        print(f"Notice: Error invoking graph for {merchant_id}, using fallback: {e}")
-        suggestions = getattr(app.state, "latest_suggestions", {}).get(merchant_id, DEMO_SUGGESTIONS)
+        print(f"Notice: Error invoking graph for {merchant_id} ({language}), using fallback: {e}")
+        from backend.agent.nodes.suggestion_node import get_fallback_suggestions
+        suggestions = get_fallback_suggestions(merchant_id, language)
 
     if not suggestions:
-        suggestions = DEMO_SUGGESTIONS
+        from backend.agent.nodes.suggestion_node import get_fallback_suggestions
+        suggestions = get_fallback_suggestions(merchant_id, language)
 
     # Update cache
     if not hasattr(app.state, "latest_suggestions"):
@@ -204,6 +208,7 @@ async def get_merchant_suggestions(merchant_id: str):
     if not hasattr(app.state, "cached_suggestions"):
         app.state.cached_suggestions = {}
 
+    app.state.latest_suggestions[cache_key] = suggestions
     app.state.latest_suggestions[merchant_id] = suggestions
     for s in suggestions:
         if isinstance(s, Suggestion):

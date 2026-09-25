@@ -7,6 +7,7 @@ import { Volume2, AlertTriangle, TrendingUp, Users, ArrowRight } from "lucide-re
 
 interface SuggestionCardProps {
   suggestion: Suggestion;
+  language?: "hi" | "mr" | "en";
   isPlaying?: boolean;
   onPlay: (suggestionId: string) => void;
 }
@@ -24,13 +25,88 @@ interface TypeConfig {
 
 export const SuggestionCard: React.FC<SuggestionCardProps> = ({
   suggestion,
+  language = "hi",
   isPlaying = false,
   onPlay,
 }) => {
-  const typeConfigs: Record<SuggestionType, TypeConfig> = {
+  const i18n = {
+    hi: {
+      failure_guard: {
+        label: "⚠️ सावधान",
+        subLabel: "Failure Guard • पिछली गलती से बचाव",
+      },
+      personal_best: {
+        label: "✅ आपकी सफलता",
+        subLabel: "Personal Best • अपने श्रेष्ठ रिकॉर्ड को दोहराएं",
+      },
+      network_wisdom: {
+        label: "🌐 आसपास के व्यापारी",
+        subLabel: "Network Wisdom • 1,800+ व्यापारियों का अनुभव",
+      },
+      confidence: "भरोसा:",
+      actionLabel: "सुझावित कदम (Recommended Action)",
+      listenButton: "सुनिए 🔊 (Suniye)",
+      audioReady: "ऑडियो तैयार है",
+    },
+    mr: {
+      failure_guard: {
+        label: "⚠️ सावधान",
+        subLabel: "Failure Guard • मागील चुकीपासून संरक्षण",
+      },
+      personal_best: {
+        label: "✅ तुमचे यश",
+        subLabel: "Personal Best • सर्वोत्तम कामगिरी पुन्हा करा",
+      },
+      network_wisdom: {
+        label: "🌐 परिसरातील व्यापारी",
+        subLabel: "Network Wisdom • १,८००+ व्यापाऱ्यांचे ज्ञान",
+      },
+      confidence: "विश्वास:",
+      actionLabel: "शिफारस केलेली कृती (Recommended Action)",
+      listenButton: "ऐका 🔊 (Aika)",
+      audioReady: "ऑडिओ तयार आहे",
+    },
+    en: {
+      failure_guard: {
+        label: "⚠️ Warning",
+        subLabel: "Failure Guard • Prevent Past Mistakes",
+      },
+      personal_best: {
+        label: "✅ Personal Best",
+        subLabel: "Personal Best • Replay Winning Patterns",
+      },
+      network_wisdom: {
+        label: "🌐 Network Wisdom",
+        subLabel: "Network Wisdom • 1,800+ Kirana Stores Insight",
+      },
+      confidence: "Confidence:",
+      actionLabel: "Recommended Action",
+      listenButton: "Listen 🔊",
+      audioReady: "Audio Ready",
+    },
+  }[language] || {
     failure_guard: {
       label: "⚠️ सावधान",
       subLabel: "Failure Guard • पिछली गलती से बचाव",
+    },
+    personal_best: {
+      label: "✅ आपकी सफलता",
+      subLabel: "Personal Best • अपने श्रेष्ठ रिकॉर्ड को दोहराएं",
+    },
+    network_wisdom: {
+      label: "🌐 आसपास के व्यापारी",
+      subLabel: "Network Wisdom • 1,800+ व्यापारियों का अनुभव",
+    },
+    confidence: "भरोसा:",
+    actionLabel: "सुझावित कदम (Recommended Action)",
+    listenButton: "सुनिए 🔊 (Suniye)",
+    audioReady: "ऑडियो तैयार है",
+  };
+
+  const typeConfigs: Record<SuggestionType, TypeConfig> = {
+    failure_guard: {
+      label: i18n.failure_guard.label,
+      subLabel: i18n.failure_guard.subLabel,
       icon: <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400" />,
       containerClass:
         "border-red-200 bg-gradient-to-b from-red-50/70 to-white hover:border-red-400 shadow-sm hover:shadow-md dark:from-red-950/20 dark:to-slate-900 dark:border-red-900/50",
@@ -43,8 +119,8 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
         "bg-red-600 hover:bg-red-700 text-white shadow-red-500/20 focus:ring-red-400",
     },
     personal_best: {
-      label: "✅ आपकी सफलता",
-      subLabel: "Personal Best • अपने श्रेष्ठ रिकॉर्ड को दोहराएं",
+      label: i18n.personal_best.label,
+      subLabel: i18n.personal_best.subLabel,
       icon: <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />,
       containerClass:
         "border-emerald-200 bg-gradient-to-b from-emerald-50/70 to-white hover:border-emerald-400 shadow-sm hover:shadow-md dark:from-emerald-950/20 dark:to-slate-900 dark:border-emerald-900/50",
@@ -57,8 +133,8 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
         "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20 focus:ring-emerald-400",
     },
     network_wisdom: {
-      label: "🌐 आसपास के व्यापारी",
-      subLabel: "Network Wisdom • 1,800+ व्यापारियों का अनुभव",
+      label: i18n.network_wisdom.label,
+      subLabel: i18n.network_wisdom.subLabel,
       icon: <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />,
       containerClass:
         "border-blue-200 bg-gradient-to-b from-blue-50/70 to-white hover:border-blue-400 shadow-sm hover:shadow-md dark:from-blue-950/20 dark:to-slate-900 dark:border-blue-900/50",
@@ -97,7 +173,8 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
           {/* Confidence Indicator */}
           <div className="text-right flex flex-col items-end">
             <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-              भरोसा: <span className="font-bold text-slate-700 dark:text-slate-200">{confidencePercent}%</span>
+              {i18n.confidence}{" "}
+              <span className="font-bold text-slate-700 dark:text-slate-200">{confidencePercent}%</span>
             </div>
             <div className="w-16 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mt-1 overflow-hidden">
               <div
@@ -125,7 +202,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
           <ArrowRight className="w-4 h-4 mt-0.5 shrink-0 opacity-80" />
           <div>
             <div className="text-[10px] uppercase font-bold tracking-wider opacity-70">
-              सुझावित कदम (Recommended Action)
+              {i18n.actionLabel}
             </div>
             <div className="text-sm font-bold leading-snug mt-0.5">
               {suggestion.action}
@@ -145,13 +222,13 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-1 ${config.buttonClass}`}
           >
             <Volume2 className="w-4 h-4 animate-pulse" />
-            <span>सुनिए 🔊 (Suniye)</span>
+            <span>{i18n.listenButton}</span>
           </button>
         )}
 
         {suggestion.audio_url && !isPlaying && (
           <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-            ऑडियो तैयार है
+            {i18n.audioReady}
           </span>
         )}
       </div>

@@ -74,7 +74,7 @@ def voice_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     suggestions_raw = state.get("suggestions", [])
     merchant_lang = state.get("language", "hi")
-    target_lang = "mr-IN" if merchant_lang == "mr" else "hi-IN"
+    target_lang = "mr-IN" if merchant_lang == "mr" else ("en-IN" if merchant_lang == "en" else "hi-IN")
 
     updated_suggestions: List[Union[Suggestion, Dict[str, Any]]] = []
 
