@@ -3,7 +3,7 @@
 
 [![Paytm Hackathon](https://img.shields.io/badge/Paytm%20Build%20for%20India-AI%20Hackathon-00b9f5.svg)](https://paytm.com)
 [![Track](https://img.shields.io/badge/Track%203-Autonomous%20AI%20Teammates-blue.svg)](#)
-[![Team](https://img.shields.io/badge/Team-Kairos-purple.svg)](#)
+[![Team](https://img.shields.io/badge/Team-Cutie's-purple.svg)](#)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776ab.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688.svg)](https://fastapi.tiangolo.com)
 [![Next.js](https://img.shields.io/badge/Next.js-14%20App%20Router-black.svg)](https://nextjs.org)
@@ -255,6 +255,6 @@ All **17 tests pass** across endpoints, models, graph flow, and voice synthesis.
 
 ---
 
-## 👥 Team Kairos
+## 👥 Team Cutie's
 - **Devesh Dolas** — Agent Orchestration, Cognee Knowledge Graph, LangGraph, FastAPI
 - **Vinay** — Frontend Dashboard, Sarvam Voice TTS Integration, n8n Automation

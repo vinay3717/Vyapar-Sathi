@@ -232,7 +232,7 @@ export default function MerchantDashboard() {
         <footer className="mt-14 pt-6 border-t border-slate-900 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-indigo-400" />
-            <span>व्यापार साथी • Paytm Build for India AI Hackathon (Team Kairos)</span>
+            <span>व्यापार साथी • Paytm Build for India AI Hackathon (Team Cutie&apos;s)</span>
           </div>
           <div className="text-slate-600">
             Powered by LangGraph • Cognee • Sarvam AI TTS • Gemini Flash
