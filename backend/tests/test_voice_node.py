@@ -1,6 +1,11 @@
 import pytest
-from models import Suggestion
-from agent.nodes.voice_node import voice_node
+
+try:
+    from backend.models import Suggestion
+    from backend.agent.nodes.voice_node import voice_node
+except ImportError:
+    from models import Suggestion
+    from agent.nodes.voice_node import voice_node
 
 
 def test_voice_node_populates_audio_url():

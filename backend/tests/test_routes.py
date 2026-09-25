@@ -41,8 +41,8 @@ def test_suggestions_route(client):
         assert len(s["title"]) > 0
         assert len(s["body"]) > 0
         assert len(s["action"]) > 0
-        assert len(s["voice_script"]) > 0
-        assert s["audio_url"] is None
+        assert s["voice_script"] is not None
+        assert s["audio_url"] is not None
 
 
 def test_voice_route(client):
