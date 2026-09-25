@@ -15,6 +15,7 @@ class Settings(BaseSettings):
 
     # Workflow (owned by Teammate)
     N8N_WEBHOOK_URL: Optional[str] = "http://localhost:8000"
+    N8N_API_KEY: Optional[str] = ""
 
     # Shared App Configuration
     ENVIRONMENT: str = "development"

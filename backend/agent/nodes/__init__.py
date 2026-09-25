@@ -1,7 +1,13 @@
-from backend.agent.nodes.ingest_node import ingest_node
-from backend.agent.nodes.pattern_node import pattern_node
-from backend.agent.nodes.suggestion_node import suggestion_node
-from backend.agent.nodes.voice_node import voice_node, generate_tts_audio
+try:
+    from backend.agent.nodes.ingest_node import ingest_node
+    from backend.agent.nodes.pattern_node import pattern_node
+    from backend.agent.nodes.suggestion_node import suggestion_node
+    from backend.agent.nodes.voice_node import voice_node, generate_tts_audio
+except ImportError:
+    from agent.nodes.ingest_node import ingest_node
+    from agent.nodes.pattern_node import pattern_node
+    from agent.nodes.suggestion_node import suggestion_node
+    from agent.nodes.voice_node import voice_node, generate_tts_audio
 
 __all__ = [
     "ingest_node",

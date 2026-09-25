@@ -43,7 +43,7 @@ def generate_tts_audio(voice_script: str, language_code: str = "hi-IN") -> str:
         payload = {
             "inputs": [voice_script],
             "target_language_code": language_code,
-            "speaker": "meera",
+            "speaker": "shreya",
             "model": "bulbul:v3",
             "enable_preprocessing": True,
         }
