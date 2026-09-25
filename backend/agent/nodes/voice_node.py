@@ -3,8 +3,12 @@ import os
 import logging
 from typing import Any, Dict, List, Union
 import httpx
-from config import settings
-from models import Suggestion
+try:
+    from backend.config import settings
+    from backend.models import Suggestion
+except ImportError:
+    from config import settings
+    from models import Suggestion
 
 logger = logging.getLogger(__name__)
 
