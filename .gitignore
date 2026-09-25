@@ -3,6 +3,7 @@
 env/
 venv/
 ENV/
+backend/.venv/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -11,9 +12,24 @@ __pycache__/
 dist/
 build/
 
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+.next/
+node_modules/
+out/
+
 # Environment Variables & Secrets
 .env
 *.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+frontend/.env.local
 !.env.example
 
 # Cognee & Local Databases
@@ -24,14 +40,15 @@ backend/.cognee/
 *.duckdb
 lancedb/
 
-# Node & Frontend
-node_modules/
-.next/
-out/
+# Temp files & audio cache
+*.log
+/tmp/
+*.wav
+*.mp3
 
 # IDE & OS
 .vscode/
 .idea/
+.DS_Store
 Thumbs.db
 Desktop.ini
-*.log
