@@ -16,7 +16,7 @@
 ---
 
 <p align="center">
-  <img src="assets/dashboard.png" alt="Vyapar Sarthi Autonomous AI Teammate Dashboard" width="100%" />
+  <img src="assets/dashboard_hindi.png" alt="Vyapar Sarthi Autonomous AI Teammate Dashboard" width="100%" />
 </p>
 
 ---
@@ -132,12 +132,29 @@ vyapar-sarthi/
 ---
 
 ## 🌐 Multilingual Support
-
+ 
 The dashboard and agent voice pipeline support seamless toggling between 3 languages:
 
 - **हिन्दी (Hindi)**: `नमस्ते, राजू किराना` • `⚠️ सावधान` • `सुनिए 🔊` (Target: `hi-IN`)
 - **मराठी (Marathi)**: `नमस्कार, राजू किराना` • `⚠️ सावधान` • `ऐका 🔊` (Target: `mr-IN`)
 - **English**: `Welcome, Raju Kirana` • `⚠️ Warning` • `Listen 🔊` (Target: `en-IN`)
+
+### 📸 Dashboard Screenshots
+
+#### 1. हिन्दी (Hindi Interface - Default)
+<p align="center">
+  <img src="assets/dashboard_hindi.png" alt="Vyapar Sarthi Hindi Dashboard" width="100%" />
+</p>
+
+#### 2. मराठी (Marathi Interface)
+<p align="center">
+  <img src="assets/dashboard_marathi.png" alt="Vyapar Sarthi Marathi Dashboard" width="100%" />
+</p>
+
+#### 3. English (English Interface)
+<p align="center">
+  <img src="assets/dashboard_english.png" alt="Vyapar Sarthi English Dashboard" width="100%" />
+</p>
 
 ---
 
