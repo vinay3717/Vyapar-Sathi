@@ -15,6 +15,12 @@
 
 ---
 
+<p align="center">
+  <img src="assets/dashboard.png" alt="Vyapar Sarthi Autonomous AI Teammate Dashboard" width="100%" />
+</p>
+
+---
+
 ## 🌟 Core Capabilities
 
 Vyapar Sarthi continuously analyzes transaction and operational decision events to surface three distinct types of guidance:
