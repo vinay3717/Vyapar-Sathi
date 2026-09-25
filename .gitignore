@@ -1,39 +1,54 @@
-# Node / Next.js
+# Node & Frontend
 frontend/node_modules/
 frontend/.next/
 frontend/out/
 frontend/build/
-.next/
 node_modules/
+.next/
+out/
+build/
 
-# Python / uv
+# Python & Virtual Environments
 backend/.venv/
 .venv/
+env/
 venv/
+ENV/
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
 *.egg-info/
 dist/
-build/
 
-# Environment files
+# Cognee & Local Storage
+.cognee/
+backend/.cognee/
+*.db
+*.sqlite
+*.duckdb
+lancedb/
+
+# Environment Variables & Secrets
 .env
+*.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 backend/.env
 frontend/.env.local
+!.env.example
 
-# Temp files & audio cache
+# Audio Cache & Temp Files
 *.log
 /tmp/
 *.wav
 *.mp3
 
-# IDE / OS
+# IDE & OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+Desktop.ini
